@@ -19,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { clearTokens } from '../utils/token';
+import { ProjectSwitcher } from './ProjectSwitcher';
 import type { MenuProps } from 'antd';
 
 const { Header, Sider, Content } = Layout;
@@ -159,7 +160,7 @@ export function AppLayout() {
             zIndex: 9,
           }}
         >
-          <Space>
+          <Space size="middle">
             {collapsed ? (
               <MenuUnfoldOutlined
                 style={{ fontSize: 18, cursor: 'pointer' }}
@@ -171,6 +172,7 @@ export function AppLayout() {
                 onClick={() => setCollapsed(true)}
               />
             )}
+            <ProjectSwitcher />
           </Space>
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space style={{ cursor: 'pointer' }}>

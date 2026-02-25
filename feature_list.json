@@ -403,7 +403,7 @@
       "步骤4：使用 React Context 或 URL 参数共享时间范围状态，所有分析页面共享",
       "步骤5：编写组件测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "组件开发",
@@ -415,7 +415,7 @@
       "步骤4：记住上次选择的项目（localStorage）",
       "步骤5：编写组件测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
