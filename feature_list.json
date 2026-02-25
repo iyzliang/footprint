@@ -94,7 +94,7 @@
       "步骤4：实现插件 destroy 生命周期调用（销毁时按顺序调用每个插件的 destroy）",
       "步骤5：编写单元测试覆盖：插件注册、setup/destroy 调用顺序、插件上下文 API"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
