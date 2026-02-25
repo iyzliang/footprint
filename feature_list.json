@@ -439,7 +439,7 @@
       "步骤3：展示各项目的简要数据摘要列表",
       "步骤4：使用 TanStack Query 请求数据，实现加载态和错误态"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -451,7 +451,7 @@
       "步骤4：实现删除项目确认弹窗",
       "步骤5：点击项目跳转到项目设置页"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -464,7 +464,7 @@
       "步骤5：高级设置标签页：数据保留天数配置、IP 解析开关、UA 解析开关",
       "步骤6：实现所有表单的保存逻辑"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -476,7 +476,7 @@
       "步骤4：实现自动刷新功能（可配置刷新间隔：10s/30s/60s，可暂停）",
       "步骤5：安装 echarts 和 echarts-for-react 依赖"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -489,7 +489,7 @@
       "步骤5：使用 ECharts 绘制多系列折线图（每个事件一条线，不同颜色）",
       "步骤6：实现图表交互（Tooltip、图例切换、缩放）"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -501,7 +501,7 @@
       "步骤4：使用 Ant Design Table 展示详细排行列表（事件名、次数、用户数）",
       "步骤5：支持配置 Top N 的数量（10/20/50）"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -513,7 +513,7 @@
       "步骤4：使用 ECharts 绘制漏斗图（展示每步的转化人数和转化率）",
       "步骤5：展示步骤间的转化率数据表格"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -526,7 +526,7 @@
       "步骤5：点击某条事件展开详情（展示完整 properties JSON）",
       "步骤6：实现 CSV 导出按钮（调用导出 API 下载文件）"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -538,7 +538,7 @@
       "步骤4：使用 Ant Design Table 展示页面加载排行（URL、平均加载时间、访问次数）",
       "步骤5：集成时间范围选择器"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -551,7 +551,7 @@
       "步骤5：实现分页和排序（按次数/按最近时间）",
       "步骤6：点击某条错误跳转到错误详情页"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -563,7 +563,7 @@
       "步骤4：展示错误堆栈信息（格式化显示，代码高亮）",
       "步骤5：展示该错误的最近事件列表（时间、用户、页面 URL、设备信息）"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面开发",
@@ -574,7 +574,7 @@
       "步骤3：实现修改密码表单（旧密码、新密码、确认新密码）",
       "步骤4：实现表单校验和保存逻辑"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "组件开发",
