@@ -250,7 +250,7 @@
       "步骤7：集成 ProjectMemberGuard，确保只有项目成员能查询",
       "步骤8：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
