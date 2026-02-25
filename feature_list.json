@@ -169,7 +169,7 @@
       "步骤8：配置 CORS 策略",
       "步骤9：编写健康检查接口 GET /api/health"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
