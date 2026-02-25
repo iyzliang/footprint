@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
+import { CollectModule } from './collect/collect.module';
 
 @Module({
   imports: [
@@ -26,9 +28,22 @@ import { ProjectModule } from './project/project.module';
         logging: configService.get<string>('NODE_ENV', 'development') === 'development',
       }),
     }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        throttlers: [
+          {
+            ttl: configService.get<number>('THROTTLE_TTL', 60) * 1000,
+            limit: configService.get<number>('THROTTLE_LIMIT', 100),
+          },
+        ],
+      }),
+    }),
     HealthModule,
     AuthModule,
     ProjectModule,
+    CollectModule,
   ],
 })
 export class AppModule {}

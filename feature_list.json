@@ -235,7 +235,7 @@
       "步骤9：实现 IP 地理位置解析（geoip-lite，可选开关）",
       "步骤10：编写单元测试和 e2e 测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
