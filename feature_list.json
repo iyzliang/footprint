@@ -124,7 +124,7 @@
       "步骤6：实现 destroy 方法，清理所有事件监听器",
       "步骤7：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
