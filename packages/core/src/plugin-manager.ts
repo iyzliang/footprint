@@ -5,10 +5,7 @@ export class PluginManager {
   private beforeSendCallbacks: ((events: TrackEvent[]) => TrackEvent[])[] = [];
   private context: PluginContext | null = null;
 
-  createContext(
-    trackFn: PluginContext['track'],
-    config: FootprintConfigReadonly,
-  ): PluginContext {
+  createContext(trackFn: PluginContext['track'], config: FootprintConfigReadonly): PluginContext {
     this.context = {
       track: trackFn,
       getConfig: () => config,
