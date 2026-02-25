@@ -53,7 +53,7 @@
       "步骤3：处理 SSR 环境下 window/document 不存在的情况，返回空值",
       "步骤4：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
