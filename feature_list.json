@@ -603,7 +603,7 @@
       "步骤6：配置 tsup 打包，输出 ESM 和 CJS",
       "步骤7：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",

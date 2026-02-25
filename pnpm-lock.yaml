@@ -246,9 +246,6 @@ importers:
       '@footprint/core':
         specifier: workspace:*
         version: link:../core
-      vue:
-        specifier: '>=3.0.0'
-        version: 3.5.29(typescript@5.9.3)
     devDependencies:
       tsup:
         specifier: ^8.5.1
@@ -256,6 +253,9 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(jsdom@28.1.0)(terser@5.46.0)
+      vue:
+        specifier: ^3.5.29
+        version: 3.5.29(typescript@5.9.3)
 
 packages:
 
