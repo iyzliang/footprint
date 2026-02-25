@@ -29,7 +29,7 @@
       "步骤7：定义 TransportData 接口（批量上报的数据格式：appId + events 数组）",
       "步骤8：导出所有类型，确保 packages/core/src/index.ts 正确导出"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
