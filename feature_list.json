@@ -618,6 +618,6 @@
       "步骤7：编写部署文档（README 中的快速启动指南）",
       "步骤8：验证 docker-compose up 能正常启动所有服务"
     ],
-    "passes": false
+    "passes": true
   }
 ]
