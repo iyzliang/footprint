@@ -2,8 +2,8 @@ export const VERSION = '0.0.1';
 
 export { Footprint } from './footprint';
 
-export { autoTrack, webVitals } from './plugins';
-export type { AutoTrackOptions, WebVitalsOptions } from './plugins';
+export { autoTrack, webVitals, errorTrack } from './plugins';
+export type { AutoTrackOptions, WebVitalsOptions, ErrorTrackOptions } from './plugins';
 
 export type {
   PageInfo,

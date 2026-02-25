@@ -153,7 +153,7 @@
       "步骤9：实现 destroy 方法，移除所有事件监听",
       "步骤10：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
