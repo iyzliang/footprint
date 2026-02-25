@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
@@ -52,6 +54,10 @@ import { UserModule } from './user/user.module';
     AnalyticsModule,
     RetentionModule,
     UserModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'dashboard', 'dist'),
+      exclude: ['/api/(.*)'],
+    }),
   ],
 })
 export class AppModule {}

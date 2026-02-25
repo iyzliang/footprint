@@ -365,7 +365,7 @@
       "步骤3：配置 SPA 回退（所有非 /api 路由返回 index.html）",
       "步骤4：验证静态文件服务正常工作"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面布局开发",
