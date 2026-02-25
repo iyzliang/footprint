@@ -29,5 +29,8 @@
     "jsdom": "^28.1.0",
     "tsup": "^8.5.1",
     "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "web-vitals": "^5.1.0"
   }
 }

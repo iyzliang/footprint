@@ -156,9 +156,10 @@ function getSimpleXPath(element: Element): string {
 
   while (current && current !== document.body) {
     const tag = current.tagName.toLowerCase();
-    const parent = current.parentElement;
+    const parent: Element | null = current.parentElement;
     if (parent) {
-      const siblings = Array.from(parent.children).filter((c) => c.tagName === current!.tagName);
+      const currentTag = current.tagName;
+      const siblings = Array.from(parent.children).filter((c: Element) => c.tagName === currentTag);
       if (siblings.length > 1) {
         const index = siblings.indexOf(current) + 1;
         parts.unshift(`${tag}[${index}]`);

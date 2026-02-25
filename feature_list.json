@@ -136,7 +136,7 @@
       "步骤4：将每个指标值通过 track 上报为 web_vitals 事件（包含指标名、指标值、评级）",
       "步骤5：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
