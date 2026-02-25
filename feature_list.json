@@ -218,7 +218,7 @@
       "步骤11：创建相关 DTO",
       "步骤12：编写单元测试和 e2e 测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
