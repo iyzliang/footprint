@@ -1,2 +1,5 @@
-/* eslint-disable no-console */
-console.log('Footprint Dashboard - placeholder');
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+createRoot(document.getElementById('root')!).render(<App />);

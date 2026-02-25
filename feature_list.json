@@ -379,7 +379,7 @@
       "步骤6：配置 TanStack Query Provider",
       "步骤7：配置 Ant Design ConfigProvider（主题色、国际化）"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "页面布局开发",
