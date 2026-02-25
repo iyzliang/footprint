@@ -263,7 +263,7 @@
       "步骤5：创建查询 DTO（projectId、eventNames[]、startDate、endDate、granularity）",
       "步骤6：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
@@ -274,7 +274,7 @@
       "步骤3：创建 AnalyticsController：GET /api/analytics/realtime",
       "步骤4：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
@@ -285,7 +285,7 @@
       "步骤3：创建查询 DTO",
       "步骤4：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
@@ -297,7 +297,7 @@
       "步骤4：创建请求 DTO（projectId、steps[]、startDate、endDate、groupBy: userId|sessionId）",
       "步骤5：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
@@ -308,7 +308,7 @@
       "步骤3：创建 AnalyticsController：GET /api/analytics/web-vitals、GET /api/analytics/page-performance",
       "步骤4：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
@@ -319,7 +319,7 @@
       "步骤3：创建 AnalyticsController：GET /api/analytics/errors、GET /api/analytics/errors/:message",
       "步骤4：编写单元测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",

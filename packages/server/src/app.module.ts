@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
 import { CollectModule } from './collect/collect.module';
 import { EventModule } from './event/event.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { EventModule } from './event/event.module';
     ProjectModule,
     CollectModule,
     EventModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
