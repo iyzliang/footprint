@@ -9,6 +9,7 @@ import { CollectModule } from './collect/collect.module';
 import { EventModule } from './event/event.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { RetentionModule } from './retention/retention.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { RetentionModule } from './retention/retention.module';
     EventModule,
     AnalyticsModule,
     RetentionModule,
+    UserModule,
   ],
 })
 export class AppModule {}
