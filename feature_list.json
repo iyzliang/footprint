@@ -42,7 +42,7 @@
       "步骤5：实现页面可见性监听（visibilitychange），页面切到后台时暂停计时，回到前台时检查是否超时",
       "步骤6：编写单元测试覆盖：ID 生成唯一性、会话超时切换、localStorage 不可用时的降级"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
