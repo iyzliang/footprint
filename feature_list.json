@@ -199,7 +199,7 @@
       "步骤8：创建注册和登录的 DTO（class-validator 校验）",
       "步骤9：编写单元测试和 e2e 测试"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "公共方法开发",
