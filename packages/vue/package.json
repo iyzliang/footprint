@@ -1,0 +1,38 @@
+{
+  "name": "@footprint/vue",
+  "version": "0.0.1",
+  "description": "Vue bindings for @footprint/core",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist .turbo"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  },
+  "dependencies": {
+    "@footprint/core": "workspace:*"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "vitest": "^4.0.18"
+  }
+}

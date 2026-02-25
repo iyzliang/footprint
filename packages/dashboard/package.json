@@ -1,0 +1,16 @@
+{
+  "name": "@footprint/dashboard",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Footprint analytics dashboard (React)",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'dashboard build - pending Vite setup'",
+    "dev": "echo 'dashboard dev - pending Vite setup'",
+    "preview": "echo 'dashboard preview - pending Vite setup'",
+    "lint": "echo 'dashboard lint - pending setup'",
+    "test": "echo 'dashboard test - pending setup'",
+    "clean": "rm -rf dist .turbo"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,623 @@
+[
+  {
+    "category": "公共方法开发",
+    "description": "Monorepo 项目初始化：pnpm workspace + Turborepo 配置，创建 packages 目录结构，配置根级 TypeScript、ESLint、Prettier",
+    "steps": [
+      "步骤1：初始化 Git 仓库，创建 .gitignore",
+      "步骤2：初始化根 package.json，配置 pnpm workspace（pnpm-workspace.yaml）",
+      "步骤3：安装 Turborepo 并创建 turbo.json，配置 build/test/lint 任务管道",
+      "步骤4：创建根级 tsconfig.base.json，定义共享的 TypeScript 编译选项",
+      "步骤5：安装并配置 ESLint + Prettier，创建 .eslintrc.js 和 .prettierrc",
+      "步骤6：创建 packages/core、packages/react、packages/vue、packages/server、packages/dashboard 目录",
+      "步骤7：为每个 package 创建基础 package.json 和 tsconfig.json（继承根配置）",
+      "步骤8：安装 Changesets 并初始化配置（.changeset/config.json）",
+      "步骤9：创建 .env.example 模板文件",
+      "步骤10：验证 pnpm install 和 turbo build 能正常运行"
+    ],
+    "passes": true
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — 共享类型定义：定义 TrackEvent、插件接口、配置项等核心 TypeScript 类型",
+    "steps": [
+      "步骤1：在 packages/core/src/types/ 目录下创建类型定义文件",
+      "步骤2：定义 FootprintConfig 接口（appId、serverUrl、debug、plugins 等配置项）",
+      "步骤3：定义 TrackEvent 接口（eventName、properties、timestamp、sessionId、userId、anonymousId、appId、page、device）",
+      "步骤4：定义 PageInfo 接口（url、title、referrer）和 DeviceInfo 接口（ua、screen、language）",
+      "步骤5：定义 FootprintPlugin 插件接口（name、setup、destroy 方法）",
+      "步骤6：定义 EventMap 接口（用于类型安全的模块扩展）",
+      "步骤7：定义 TransportData 接口（批量上报的数据格式：appId + events 数组）",
+      "步骤8：导出所有类型，确保 packages/core/src/index.ts 正确导出"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — ID 生成与会话管理：实现匿名 ID 持久化、会话 ID 生成与 30 分钟超时切换逻辑",
+    "steps": [
+      "步骤1：实现 UUID v4 生成工具函数",
+      "步骤2：实现 Storage 抽象层（封装 localStorage 读写，处理 SSR 和隐私模式下的降级）",
+      "步骤3：实现 AnonymousId 管理器（首次访问生成 UUID 并持久化到 localStorage，后续读取复用）",
+      "步骤4：实现 SessionManager（生成 sessionId，记录最后活动时间，30 分钟无活动自动切换新会话）",
+      "步骤5：实现页面可见性监听（visibilitychange），页面切到后台时暂停计时，回到前台时检查是否超时",
+      "步骤6：编写单元测试覆盖：ID 生成唯一性、会话超时切换、localStorage 不可用时的降级"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — 自动信息采集：实现页面信息（url/title/referrer）和设备信息（ua/screen/language）的自动采集",
+    "steps": [
+      "步骤1：实现 getPageInfo() 函数，自动采集当前页面的 url、title、referrer",
+      "步骤2：实现 getDeviceInfo() 函数，自动采集 userAgent、屏幕分辨率、浏览器语言",
+      "步骤3：处理 SSR 环境下 window/document 不存在的情况，返回空值",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — 数据上报传输层（Transport）：实现批量上报、sendBeacon 兜底、失败重试与离线缓存",
+    "steps": [
+      "步骤1：实现 Transport 类，负责将事件数据发送到 serverUrl",
+      "步骤2：实现 fetch 方式的 HTTP POST 上报（Content-Type: application/json）",
+      "步骤3：实现 navigator.sendBeacon 方式的上报（用于页面关闭场景）",
+      "步骤4：实现发送失败时将事件暂存到 localStorage 的逻辑",
+      "步骤5：实现下次初始化时从 localStorage 读取未发送事件并补发的逻辑",
+      "步骤6：实现重试机制（最多重试 3 次，指数退避）",
+      "步骤7：编写单元测试覆盖：正常发送、sendBeacon 降级、失败重试、离线缓存补发"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — 事件队列与批量调度：实现内存事件队列、阈值触发和定时触发的批量发送机制",
+    "steps": [
+      "步骤1：实现 EventQueue 类，维护内存中的事件队列",
+      "步骤2：实现 enqueue 方法，将单条事件加入队列",
+      "步骤3：实现阈值触发逻辑（队列达到 10 条时自动 flush）",
+      "步骤4：实现定时触发逻辑（每 5 秒自动 flush）",
+      "步骤5：实现 flush 方法，将队列中所有事件通过 Transport 批量发送，发送后清空队列",
+      "步骤6：实现页面 beforeunload/visibilitychange 事件监听，触发 sendBeacon 方式的 flush",
+      "步骤7：支持配置项覆盖默认阈值和定时间隔",
+      "步骤8：编写单元测试覆盖：阈值触发、定时触发、手动 flush、页面关闭 flush"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — 插件系统：实现插件注册、生命周期管理和插件间通信机制",
+    "steps": [
+      "步骤1：定义 PluginContext 接口（提供给插件的 API：track、getConfig、onEvent 等）",
+      "步骤2：实现 PluginManager 类，管理插件的注册和卸载",
+      "步骤3：实现插件 setup 生命周期调用（初始化时按顺序调用每个插件的 setup）",
+      "步骤4：实现插件 destroy 生命周期调用（销毁时按顺序调用每个插件的 destroy）",
+      "步骤5：编写单元测试覆盖：插件注册、setup/destroy 调用顺序、插件上下文 API"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — Footprint 主类：整合所有模块，实现 init/track/identify/setGlobalProps 等核心 API",
+    "steps": [
+      "步骤1：实现 Footprint 类，作为 SDK 的入口",
+      "步骤2：实现 Footprint.init(config) 静态方法，初始化配置、SessionManager、Transport、EventQueue、PluginManager",
+      "步骤3：实现 track(eventName, properties) 方法，组装完整的 TrackEvent 并加入队列",
+      "步骤4：实现 identify(userId) 方法，关联匿名 ID 与登录用户 ID",
+      "步骤5：实现 setGlobalProps(props) 方法，设置全局属性（每条事件自动合并）",
+      "步骤6：实现 destroy() 方法，flush 队列、销毁插件、清理定时器和事件监听",
+      "步骤7：实现 debug 模式下的日志输出",
+      "步骤8：配置 tsup 打包，输出 ESM、CJS、UMD 三种格式",
+      "步骤9：编写集成测试覆盖完整的初始化 → 埋点 → 上报流程"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — autoTrack 插件：自动采集 PV/UV、元素点击、页面停留时长",
+    "steps": [
+      "步骤1：实现 autoTrack 插件工厂函数，返回符合 FootprintPlugin 接口的对象",
+      "步骤2：实现 PV 自动采集（监听 popstate/pushState/replaceState，SPA 路由变化时自动上报 page_view 事件）",
+      "步骤3：实现元素点击自动采集（全局 click 事件委托，采集被点击元素的标签名、文本内容、data-track 属性等）",
+      "步骤4：实现页面停留时长采集（记录页面进入时间，离开时上报 page_leave 事件和停留时长）",
+      "步骤5：支持配置项（是否启用 PV 采集、是否启用点击采集、点击采集的 CSS 选择器过滤）",
+      "步骤6：实现 destroy 方法，清理所有事件监听器",
+      "步骤7：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — webVitals 插件：采集 LCP、FID、CLS、TTFB 等 Web Vitals 指标",
+    "steps": [
+      "步骤1：安装 web-vitals 库作为依赖",
+      "步骤2：实现 webVitals 插件工厂函数",
+      "步骤3：在 setup 中调用 web-vitals 的 onLCP、onFID、onCLS、onTTFB、onINP 等方法",
+      "步骤4：将每个指标值通过 track 上报为 web_vitals 事件（包含指标名、指标值、评级）",
+      "步骤5：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "@footprint/core SDK — errorTrack 插件：捕获 JS 异常、Promise 未捕获、资源加载失败",
+    "steps": [
+      "步骤1：实现 errorTrack 插件工厂函数",
+      "步骤2：监听 window.onerror / window.addEventListener('error')，捕获 JS 运行时异常",
+      "步骤3：监听 window.addEventListener('unhandledrejection')，捕获未处理的 Promise 异常",
+      "步骤4：监听资源加载失败事件（通过 error 事件的 Event.target 判断是否为资源元素）",
+      "步骤5：上报 js_error 事件（包含 message、stack、filename、lineno、colno）",
+      "步骤6：上报 promise_error 事件（包含 reason）",
+      "步骤7：上报 resource_error 事件（包含资源 URL、标签名）",
+      "步骤8：实现错误去重逻辑（相同错误短时间内不重复上报）",
+      "步骤9：实现 destroy 方法，移除所有事件监听",
+      "步骤10：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — NestJS 项目初始化与公共模块：创建 NestJS 项目，配置 TypeORM + PostgreSQL，实现公共 Guard、拦截器、DTO 校验",
+    "steps": [
+      "步骤1：在 packages/server 下使用 NestJS CLI 初始化项目",
+      "步骤2：安装并配置 TypeORM + pg 驱动，创建数据库连接配置（从环境变量读取）",
+      "步骤3：安装并配置 class-validator + class-transformer，启用全局 ValidationPipe",
+      "步骤4：实现全局异常过滤器（统一错误响应格式）",
+      "步骤5：实现全局响应拦截器（统一成功响应格式）",
+      "步骤6：安装并配置 @nestjs/config，加载 .env 环境变量",
+      "步骤7：安装并配置 @nestjs/swagger，生成 API 文档",
+      "步骤8：配置 CORS 策略",
+      "步骤9：编写健康检查接口 GET /api/health"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — 数据库实体与迁移：创建 users、projects、project_members、events 表的 TypeORM Entity 和数据库迁移",
+    "steps": [
+      "步骤1：创建 User 实体（id、email、passwordHash、nickname、createdAt、updatedAt）",
+      "步骤2：创建 Project 实体（id、name、appId、appSecret、domainWhitelist、settings、createdAt、updatedAt）",
+      "步骤3：创建 ProjectMember 实体（id、projectId、userId、role、createdAt），定义与 User 和 Project 的关联关系",
+      "步骤4：创建 Event 实体（id、projectId、eventName、properties[JSONB]、timestamp、sessionId、userId、anonymousId、pageUrl、pageTitle、referrer、userAgent、screenResolution、language、ip、country、city、createdAt），定义索引",
+      "步骤5：创建 timestamp 索引和 project_id + event_name 复合索引",
+      "步骤6：配置 TypeORM 迁移脚本，生成初始迁移文件",
+      "步骤7：验证迁移能正确创建所有表和索引"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Auth 认证模块：实现用户注册、登录、JWT 签发与刷新、密码哈希",
+    "steps": [
+      "步骤1：创建 AuthModule，安装 @nestjs/jwt 和 @nestjs/passport、bcrypt",
+      "步骤2：实现 AuthService：注册方法（邮箱唯一校验、bcrypt 密码哈希、创建用户）",
+      "步骤3：实现 AuthService：登录方法（邮箱密码校验、签发 JWT accessToken + refreshToken）",
+      "步骤4：实现 AuthService：Token 刷新方法（验证 refreshToken，签发新的 accessToken）",
+      "步骤5：实现 JwtStrategy（Passport JWT 策略，从 Bearer Token 中提取并验证用户）",
+      "步骤6：实现 JwtAuthGuard（全局可用的认证守卫）",
+      "步骤7：创建 AuthController：POST /api/auth/register、POST /api/auth/login、POST /api/auth/refresh",
+      "步骤8：创建注册和登录的 DTO（class-validator 校验）",
+      "步骤9：编写单元测试和 e2e 测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Project 项目管理模块：实现项目 CRUD、AppId/AppSecret 生成、成员管理",
+    "steps": [
+      "步骤1：创建 ProjectModule",
+      "步骤2：实现 ProjectService：创建项目（自动生成 appId 和 appSecret，关联创建者为 owner）",
+      "步骤3：实现 ProjectService：查询当前用户的所有项目列表",
+      "步骤4：实现 ProjectService：查询单个项目详情（含成员列表）",
+      "步骤5：实现 ProjectService：更新项目设置（名称、域名白名单、隐私设置）",
+      "步骤6：实现 ProjectService：重新生成 appSecret",
+      "步骤7：实现 ProjectService：删除项目",
+      "步骤8：实现 ProjectMemberService：添加成员（通过邮箱邀请）、移除成员",
+      "步骤9：实现 ProjectMemberGuard（校验当前用户是否为该项目成员）",
+      "步骤10：创建 ProjectController：CRUD 路由和成员管理路由",
+      "步骤11：创建相关 DTO",
+      "步骤12：编写单元测试和 e2e 测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Collect 数据接收模块：实现 SDK 事件上报接口、appId 校验、域名白名单、频率限制、异步队列写入",
+    "steps": [
+      "步骤1：创建 CollectModule",
+      "步骤2：实现 CollectController：POST /api/collect 接口，接收批量事件数据",
+      "步骤3：实现 appId 校验逻辑（查询 Project 表验证 appId 是否存在，使用内存缓存减少查询）",
+      "步骤4：实现域名白名单校验（从请求 Origin/Referer 头提取域名，与项目配置对比）",
+      "步骤5：安装并配置 @nestjs/throttler，实现按 IP + appId 的频率限制",
+      "步骤6：实现数据校验（事件名长度限制、属性深度限制、单次上报条数上限）",
+      "步骤7：安装并配置 @nestjs/bull + Redis（或使用内存队列），实现事件异步入库",
+      "步骤8：实现 EventProcessor（Bull Queue 消费者），批量写入 PostgreSQL",
+      "步骤9：实现 IP 地理位置解析（geoip-lite，可选开关）",
+      "步骤10：编写单元测试和 e2e 测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Event 事件查询模块：实现事件明细列表查询、分页、多条件筛选",
+    "steps": [
+      "步骤1：创建 EventModule",
+      "步骤2：实现 EventService：分页查询事件列表（支持按 projectId、eventName、userId、时间范围筛选）",
+      "步骤3：实现 EventService：查询单条事件详情",
+      "步骤4：实现 EventService：查询项目下所有不同的事件名列表（用于筛选下拉框）",
+      "步骤5：创建 EventController：GET /api/events（分页列表）、GET /api/events/:id（详情）、GET /api/events/names（事件名列表）",
+      "步骤6：创建查询 DTO（分页参数、筛选条件校验）",
+      "步骤7：集成 ProjectMemberGuard，确保只有项目成员能查询",
+      "步骤8：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 事件趋势：实现按天/小时聚合的事件数量趋势查询",
+    "steps": [
+      "步骤1：创建 AnalyticsModule",
+      "步骤2：实现 AnalyticsService：事件趋势查询（按 projectId + eventName + 时间范围，按天或小时分组聚合 COUNT）",
+      "步骤3：支持多事件对比（同时查询多个 eventName 的趋势数据）",
+      "步骤4：创建 AnalyticsController：GET /api/analytics/trend",
+      "步骤5：创建查询 DTO（projectId、eventNames[]、startDate、endDate、granularity）",
+      "步骤6：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 实时概览：实现最近 30 分钟的实时数据统计",
+    "steps": [
+      "步骤1：实现 AnalyticsService：实时概览查询（最近 30 分钟内的事件总数、独立用户数、独立会话数）",
+      "步骤2：实现按分钟粒度的事件量趋势（最近 30 分钟，每分钟一个数据点）",
+      "步骤3：创建 AnalyticsController：GET /api/analytics/realtime",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 热门事件排行：实现 Top N 事件统计",
+    "steps": [
+      "步骤1：实现 AnalyticsService：热门事件查询（按 projectId + 时间范围，GROUP BY eventName，ORDER BY COUNT DESC，LIMIT N）",
+      "步骤2：创建 AnalyticsController：GET /api/analytics/top-events",
+      "步骤3：创建查询 DTO",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 漏斗分析：实现自定义步骤的漏斗转化率查询",
+    "steps": [
+      "步骤1：实现 AnalyticsService：漏斗分析查询（给定有序的事件名步骤列表，计算每一步的用户转化数和转化率）",
+      "步骤2：漏斗逻辑：同一用户/会话按时间顺序依次完成步骤才算转化",
+      "步骤3：创建 AnalyticsController：POST /api/analytics/funnel",
+      "步骤4：创建请求 DTO（projectId、steps[]、startDate、endDate、groupBy: userId|sessionId）",
+      "步骤5：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 性能监控：实现 Web Vitals 指标趋势和页面加载排行查询",
+    "steps": [
+      "步骤1：实现 AnalyticsService：Web Vitals 趋势查询（筛选 eventName='web_vitals' 的事件，按指标名分组，按天/小时聚合 AVG/P75/P95）",
+      "步骤2：实现 AnalyticsService：页面加载排行查询（按页面 URL 分组，计算平均加载时间，排序取 Top N）",
+      "步骤3：创建 AnalyticsController：GET /api/analytics/web-vitals、GET /api/analytics/page-performance",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — Analytics 分析模块 — 错误监控：实现错误聚合列表和错误详情查询",
+    "steps": [
+      "步骤1：实现 AnalyticsService：错误聚合列表（筛选 js_error/promise_error/resource_error 事件，按 message 分组聚合，统计出现次数、影响用户数、首次/最近出现时间）",
+      "步骤2：实现 AnalyticsService：错误详情查询（查询某个错误 message 的所有事件明细，包含堆栈信息）",
+      "步骤3：创建 AnalyticsController：GET /api/analytics/errors、GET /api/analytics/errors/:message",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — 数据导出功能：实现事件明细 CSV 导出",
+    "steps": [
+      "步骤1：实现 EventService：流式查询事件数据并转换为 CSV 格式",
+      "步骤2：创建 EventController：GET /api/events/export（返回 CSV 文件流，设置 Content-Disposition 头）",
+      "步骤3：支持与事件列表相同的筛选条件",
+      "步骤4：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — 数据保留策略：实现定时任务清理过期事件数据",
+    "steps": [
+      "步骤1：安装 @nestjs/schedule，配置定时任务模块",
+      "步骤2：在 Project 实体中添加 dataRetentionDays 字段（默认 90 天）",
+      "步骤3：实现定时任务（每天凌晨执行），按项目的 dataRetentionDays 配置删除过期事件",
+      "步骤4：实现批量删除逻辑（分批删除避免锁表）",
+      "步骤5：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — 用户设置模块：实现个人信息查看与修改、密码修改",
+    "steps": [
+      "步骤1：创建 UserModule",
+      "步骤2：实现 UserService：查询当前用户信息、更新昵称、修改密码（验证旧密码）",
+      "步骤3：创建 UserController：GET /api/user/profile、PUT /api/user/profile、PUT /api/user/password",
+      "步骤4：创建相关 DTO",
+      "步骤5：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Server — 静态文件托管：配置 NestJS 托管 Dashboard 构建产物",
+    "steps": [
+      "步骤1：安装 @nestjs/serve-static",
+      "步骤2：配置 ServeStaticModule，指向 Dashboard 构建输出目录",
+      "步骤3：配置 SPA 回退（所有非 /api 路由返回 index.html）",
+      "步骤4：验证静态文件服务正常工作"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面布局开发",
+    "description": "Dashboard — 项目初始化与路由配置：创建 React + Vite 项目，配置路由、全局状态、请求层",
+    "steps": [
+      "步骤1：在 packages/dashboard 下使用 Vite 创建 React + TypeScript 项目",
+      "步骤2：安装核心依赖：antd、@ant-design/icons、react-router-dom、@tanstack/react-query、axios",
+      "步骤3：配置 axios 实例（baseURL、请求拦截器自动附加 JWT Token、响应拦截器统一错误处理、401 跳转登录）",
+      "步骤4：配置 React Router 路由表（登录页、主布局页及所有子路由）",
+      "步骤5：实现路由守卫（未登录跳转登录页）",
+      "步骤6：配置 TanStack Query Provider",
+      "步骤7：配置 Ant Design ConfigProvider（主题色、国际化）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面布局开发",
+    "description": "Dashboard — 主布局框架：实现顶部导航栏 + 侧边栏 + 内容区的整体布局",
+    "steps": [
+      "步骤1：使用 Ant Design Layout 组件实现整体布局（Header + Sider + Content）",
+      "步骤2：实现顶部导航栏（Logo、项目切换器下拉框、用户头像下拉菜单）",
+      "步骤3：实现侧边栏菜单（数据分析、性能监控、错误监控、项目管理、设置），根据路由高亮当前菜单",
+      "步骤4：实现内容区的 Outlet 渲染子路由",
+      "步骤5：实现响应式布局（小屏幕侧边栏可折叠）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "组件开发",
+    "description": "Dashboard — 全局时间范围选择器组件：实现可复用的时间范围选择器，支持预设和自定义范围",
+    "steps": [
+      "步骤1：创建 TimeRangeSelector 组件，使用 Ant Design DatePicker.RangePicker",
+      "步骤2：实现预设快捷选项（今天、近 7 天、近 30 天）",
+      "步骤3：实现自定义日期范围选择",
+      "步骤4：使用 React Context 或 URL 参数共享时间范围状态，所有分析页面共享",
+      "步骤5：编写组件测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "组件开发",
+    "description": "Dashboard — 项目切换器组件：实现顶部导航栏的项目快速切换",
+    "steps": [
+      "步骤1：创建 ProjectSwitcher 组件，使用 Ant Design Select/Dropdown",
+      "步骤2：从 API 获取当前用户的项目列表",
+      "步骤3：切换项目时更新全局状态和 URL 参数",
+      "步骤4：记住上次选择的项目（localStorage）",
+      "步骤5：编写组件测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 登录页：实现邮箱密码登录和注册功能",
+    "steps": [
+      "步骤1：创建登录页面组件，使用 Ant Design Form 实现登录表单（邮箱、密码）",
+      "步骤2：实现登录逻辑（调用 POST /api/auth/login，存储 JWT Token）",
+      "步骤3：实现注册表单（邮箱、密码、确认密码、昵称），支持登录/注册表单切换",
+      "步骤4：实现注册逻辑（调用 POST /api/auth/register，注册成功后自动登录）",
+      "步骤5：实现表单校验（邮箱格式、密码长度、确认密码一致）",
+      "步骤6：登录成功后跳转到首页"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 首页全局概览：展示所有项目的汇总数据",
+    "steps": [
+      "步骤1：创建首页组件",
+      "步骤2：展示统计卡片（今日总事件数、活跃项目数、总错误数等）",
+      "步骤3：展示各项目的简要数据摘要列表",
+      "步骤4：使用 TanStack Query 请求数据，实现加载态和错误态"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 项目列表页：展示当前用户的所有项目，支持创建新项目",
+    "steps": [
+      "步骤1：创建项目列表页面组件",
+      "步骤2：使用 Ant Design Table/Card 展示项目列表（名称、appId、创建时间、事件数量）",
+      "步骤3：实现创建项目弹窗（Modal + Form，输入项目名称）",
+      "步骤4：实现删除项目确认弹窗",
+      "步骤5：点击项目跳转到项目设置页"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 项目设置页：展示 AppId/AppSecret、域名白名单配置、成员管理、数据保留设置",
+    "steps": [
+      "步骤1：创建项目设置页面组件，使用 Ant Design Tabs 分为多个标签页",
+      "步骤2：基本信息标签页：展示项目名称（可编辑）、appId（只读复制）、appSecret（可重新生成，确认弹窗）",
+      "步骤3：域名白名单标签页：可添加/删除允许上报的域名",
+      "步骤4：成员管理标签页：展示成员列表，支持通过邮箱邀请新成员、移除成员",
+      "步骤5：高级设置标签页：数据保留天数配置、IP 解析开关、UA 解析开关",
+      "步骤6：实现所有表单的保存逻辑"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 实时概览页：展示最近 30 分钟的实时数据",
+    "steps": [
+      "步骤1：创建实时概览页面组件",
+      "步骤2：展示统计卡片（当前在线用户数、最近 30 分钟事件总数、独立会话数）",
+      "步骤3：使用 ECharts 绘制最近 30 分钟的事件量折线图（按分钟粒度）",
+      "步骤4：实现自动刷新功能（可配置刷新间隔：10s/30s/60s，可暂停）",
+      "步骤5：安装 echarts 和 echarts-for-react 依赖"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 事件趋势页：展示事件数量趋势折线图，支持多事件对比",
+    "steps": [
+      "步骤1：创建事件趋势页面组件",
+      "步骤2：实现事件名多选下拉框（从 API 获取事件名列表）",
+      "步骤3：实现粒度切换（按天/按小时）",
+      "步骤4：集成时间范围选择器组件",
+      "步骤5：使用 ECharts 绘制多系列折线图（每个事件一条线，不同颜色）",
+      "步骤6：实现图表交互（Tooltip、图例切换、缩放）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 事件排行页：展示热门事件 Top N 排行",
+    "steps": [
+      "步骤1：创建事件排行页面组件",
+      "步骤2：集成时间范围选择器",
+      "步骤3：使用 ECharts 绘制水平柱状图展示 Top N 事件",
+      "步骤4：使用 Ant Design Table 展示详细排行列表（事件名、次数、用户数）",
+      "步骤5：支持配置 Top N 的数量（10/20/50）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 漏斗分析页：实现自定义步骤的漏斗图",
+    "steps": [
+      "步骤1：创建漏斗分析页面组件",
+      "步骤2：实现步骤配置区域（可动态添加/删除/排序步骤，每步选择一个事件名）",
+      "步骤3：集成时间范围选择器",
+      "步骤4：使用 ECharts 绘制漏斗图（展示每步的转化人数和转化率）",
+      "步骤5：展示步骤间的转化率数据表格"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 事件明细页：展示事件明细列表，支持筛选、分页、导出",
+    "steps": [
+      "步骤1：创建事件明细页面组件",
+      "步骤2：实现筛选栏（事件名下拉、用户 ID 输入、时间范围选择）",
+      "步骤3：使用 Ant Design Table 展示事件列表（事件名、时间、用户、页面 URL、属性预览）",
+      "步骤4：实现分页功能",
+      "步骤5：点击某条事件展开详情（展示完整 properties JSON）",
+      "步骤6：实现 CSV 导出按钮（调用导出 API 下载文件）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — Web Vitals 性能监控页：展示 Web Vitals 指标趋势和页面加载排行",
+    "steps": [
+      "步骤1：创建性能监控页面组件",
+      "步骤2：展示 Web Vitals 概览卡片（LCP、FID、CLS、TTFB 的当前均值和评级，用颜色标识好/中/差）",
+      "步骤3：使用 ECharts 绘制各指标的趋势折线图（支持切换指标和粒度）",
+      "步骤4：使用 Ant Design Table 展示页面加载排行（URL、平均加载时间、访问次数）",
+      "步骤5：集成时间范围选择器"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 错误监控 — 错误列表页：展示按错误信息聚合的错误列表",
+    "steps": [
+      "步骤1：创建错误列表页面组件",
+      "步骤2：使用 Ant Design Table 展示错误列表（错误类型标签、错误信息、出现次数、影响用户数、首次/最近出现时间）",
+      "步骤3：支持按错误类型筛选（js_error / promise_error / resource_error）",
+      "步骤4：集成时间范围选择器",
+      "步骤5：实现分页和排序（按次数/按最近时间）",
+      "步骤6：点击某条错误跳转到错误详情页"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 错误监控 — 错误详情页：展示单个错误的详细信息",
+    "steps": [
+      "步骤1：创建错误详情页面组件",
+      "步骤2：展示错误概要信息（错误信息、类型、出现次数、影响用户数、首次/最近出现时间）",
+      "步骤3：使用 ECharts 绘制该错误的出现次数趋势图",
+      "步骤4：展示错误堆栈信息（格式化显示，代码高亮）",
+      "步骤5：展示该错误的最近事件列表（时间、用户、页面 URL、设备信息）"
+    ],
+    "passes": false
+  },
+  {
+    "category": "页面开发",
+    "description": "Dashboard — 设置页：实现个人信息查看与修改、密码修改",
+    "steps": [
+      "步骤1：创建设置页面组件",
+      "步骤2：实现个人信息表单（昵称修改、邮箱展示只读）",
+      "步骤3：实现修改密码表单（旧密码、新密码、确认新密码）",
+      "步骤4：实现表单校验和保存逻辑"
+    ],
+    "passes": false
+  },
+  {
+    "category": "组件开发",
+    "description": "@footprint/react — React 框架绑定包：实现 Provider、useTrack Hook、TrackClick 组件",
+    "steps": [
+      "步骤1：在 packages/react 下配置项目，添加 @footprint/core 和 react 为依赖",
+      "步骤2：创建 FootprintContext（React Context，存储 Footprint 实例）",
+      "步骤3：实现 FootprintProvider 组件（接收 instance prop，注入 Context）",
+      "步骤4：实现 useFootprint Hook（从 Context 获取 Footprint 实例）",
+      "步骤5：实现 useTrack Hook（返回 track 函数，内部调用 fp.track）",
+      "步骤6：实现 TrackClick 组件（包裹子元素，自动在点击时调用 track）",
+      "步骤7：配置 tsup 打包，输出 ESM 和 CJS",
+      "步骤8：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "组件开发",
+    "description": "@footprint/vue — Vue 框架绑定包：实现 Plugin、useTrack 组合式 API、v-track 指令",
+    "steps": [
+      "步骤1：在 packages/vue 下配置项目，添加 @footprint/core 和 vue 为依赖",
+      "步骤2：实现 FootprintPlugin（Vue 插件，通过 app.provide 注入 Footprint 实例）",
+      "步骤3：实现 useFootprint 组合式 API（通过 inject 获取实例）",
+      "步骤4：实现 useTrack 组合式 API（返回 track 函数）",
+      "步骤5：实现 v-track 自定义指令（v-track:click 绑定点击事件自动埋点）",
+      "步骤6：配置 tsup 打包，输出 ESM 和 CJS",
+      "步骤7：编写单元测试"
+    ],
+    "passes": false
+  },
+  {
+    "category": "公共方法开发",
+    "description": "Docker 部署配置：创建 Dockerfile、docker-compose.yml，实现一键部署",
+    "steps": [
+      "步骤1：为 packages/server 创建 Dockerfile（多阶段构建：构建阶段编译 TypeScript，运行阶段使用 node:alpine）",
+      "步骤2：为 packages/dashboard 创建构建脚本，构建产物复制到 server 的静态目录",
+      "步骤3：创建根目录 docker-compose.yml（postgres + server 两个服务）",
+      "步骤4：配置 PostgreSQL 服务（数据卷持久化、环境变量配置）",
+      "步骤5：配置 server 服务（依赖 postgres、环境变量、端口映射）",
+      "步骤6：创建 .env.example 模板（数据库连接、JWT 密钥、端口等）",
+      "步骤7：编写部署文档（README 中的快速启动指南）",
+      "步骤8：验证 docker-compose up 能正常启动所有服务"
+    ],
+    "passes": false
+  }
+]

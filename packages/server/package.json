@@ -1,0 +1,16 @@
+{
+  "name": "@footprint/server",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Footprint analytics backend service (NestJS)",
+  "scripts": {
+    "build": "echo 'server build - pending NestJS setup'",
+    "dev": "echo 'server dev - pending NestJS setup'",
+    "start": "node dist/main",
+    "start:prod": "node dist/main",
+    "lint": "echo 'server lint - pending setup'",
+    "test": "echo 'server test - pending setup'",
+    "clean": "rm -rf dist .turbo"
+  },
+  "license": "MIT"
+}
