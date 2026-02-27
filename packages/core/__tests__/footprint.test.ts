@@ -94,10 +94,10 @@ describe('Footprint', () => {
 
       const body = JSON.parse(fetchMock.mock.calls[0][1].body);
       const event = body.events[0];
-      expect(event.page).toHaveProperty('url');
-      expect(event.page).toHaveProperty('title');
-      expect(event.device).toHaveProperty('ua');
-      expect(event.device).toHaveProperty('screen');
+      expect(event).toHaveProperty('pageUrl');
+      expect(event).toHaveProperty('pageTitle');
+      expect(event).toHaveProperty('userAgent');
+      expect(event).toHaveProperty('screenResolution');
 
       fp.destroy();
     });

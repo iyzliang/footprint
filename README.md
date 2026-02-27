@@ -281,6 +281,53 @@ const track = useTrack();
 
 ---
 
+## 本地引入
+
+### 方式一：`<script>` 标签直接引入（最简单）
+
+构建后将 packages/core/dist/index.global.js 复制到你的项目中，通过 script 标签加载：
+
+  <script src="/path/to/index.global.js"></script>
+  <script>
+    const fp = Footprint.Footprint.init({
+      appId: 'your-app-id',
+      serverUrl: 'http://localhost:3008',
+      debug: true,
+      plugins: [
+        Footprint.autoTrack(),
+        Footprint.errorTrack(),
+        Footprint.webVitals(),
+      ],
+    });
+  </script>
+
+全局变量 Footprint 下包含所有导出：Footprint.Footprint（类）、Footprint.autoTrack、Footprint.errorTrack、Footprint.webVitals 等。
+
+### 方式二：ES Module 引入
+
+如果你的项目支持 ES Module，可以直接引用构建产物：
+
+  <script type="module">
+    import { Footprint, autoTrack, errorTrack, webVitals } from '/path/to/index.mjs';
+    const fp = Footprint.init({
+      appId: 'your-app-id',
+      serverUrl: 'http://localhost:3008',
+      plugins: [autoTrack(), errorTrack(), webVitals()],
+    });
+  </script>
+
+### 方式三：在其他本地项目中通过相对路径引用
+
+在目标项目的 package.json 中直接指向本地路径：
+
+{
+"dependencies": {
+"@footprint/core": "file:../footprint/packages/core"
+}
+}
+
+然后正常 import { Footprint } from '@footprint/core' 即可。
+
 ## 构建
 
 ```bash

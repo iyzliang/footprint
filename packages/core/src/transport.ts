@@ -1,8 +1,36 @@
-import type { TrackEvent, TransportData } from './types';
+import type { TrackEvent } from './types';
 import { storage } from './utils/storage';
 
 const FAILED_EVENTS_KEY = 'failed_events';
 const DEFAULT_MAX_RETRIES = 3;
+
+interface FlatEvent {
+  eventName: string;
+  properties: Record<string, unknown>;
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  anonymousId: string;
+  pageUrl?: string;
+  pageTitle?: string;
+  referrer?: string;
+  userAgent?: string;
+  screenResolution?: string;
+  language?: string;
+}
+
+function flattenEvent(event: TrackEvent): FlatEvent {
+  const { appId: _, page, device, ...rest } = event;
+  return {
+    ...rest,
+    pageUrl: page?.url,
+    pageTitle: page?.title,
+    referrer: page?.referrer,
+    userAgent: device?.ua,
+    screenResolution: device?.screen,
+    language: device?.language,
+  };
+}
 
 export interface TransportOptions {
   serverUrl: string;
@@ -24,9 +52,9 @@ export class Transport {
   async send(events: TrackEvent[]): Promise<boolean> {
     if (events.length === 0) return true;
 
-    const data: TransportData = {
+    const data = {
       appId: this.appId,
-      events,
+      events: events.map(flattenEvent),
     };
 
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
@@ -66,9 +94,9 @@ export class Transport {
       return false;
     }
 
-    const data: TransportData = {
+    const data = {
       appId: this.appId,
-      events,
+      events: events.map(flattenEvent),
     };
 
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
