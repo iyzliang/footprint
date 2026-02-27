@@ -61,7 +61,6 @@ export class AuthService {
     }
 
     const tokens = this.generateTokens(user);
-
     return {
       user: { id: user.id, email: user.email, nickname: user.nickname },
       ...tokens,

@@ -56,7 +56,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'dashboard', 'dist'),
-      exclude: ['/api/(.*)'],
+      exclude: ['/api/{*path}'],
     }),
   ],
 })

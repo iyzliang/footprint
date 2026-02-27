@@ -19,7 +19,12 @@ let isRefreshing = false;
 let pendingRequests: Array<(token: string) => void> = [];
 
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
@@ -45,10 +50,11 @@ client.interceptors.response.use(
 
       try {
         const { data } = await axios.post('/api/auth/refresh', { refreshToken });
-        setAccessToken(data.accessToken);
-        pendingRequests.forEach((cb) => cb(data.accessToken));
+        const accessToken = data.data.accessToken;
+        setAccessToken(accessToken);
+        pendingRequests.forEach((cb) => cb(accessToken));
         pendingRequests = [];
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return client(originalRequest);
       } catch {
         clearTokens();

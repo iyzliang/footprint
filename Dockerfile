@@ -29,6 +29,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
 COPY packages/server/package.json ./package.json
 
-EXPOSE 3001
+EXPOSE 3007
 
 CMD ["node", "dist/main.js"]

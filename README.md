@@ -19,14 +19,14 @@ footprint/
 
 ### 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| SDK 核心 | TypeScript、tsup（ESM/CJS/UMD） |
-| React 绑定 | React Context + Hooks |
-| Vue 绑定 | Vue 3 Plugin + Composables + 自定义指令 |
-| 后端 | NestJS、TypeORM、PostgreSQL、Passport JWT |
-| 前端看板 | React 19、Vite、Ant Design 6、ECharts、TanStack Query |
-| 工具链 | pnpm workspace、Turborepo、ESLint、Prettier、Changesets |
+| 层级       | 技术                                                    |
+| ---------- | ------------------------------------------------------- |
+| SDK 核心   | TypeScript、tsup（ESM/CJS/UMD）                         |
+| React 绑定 | React Context + Hooks                                   |
+| Vue 绑定   | Vue 3 Plugin + Composables + 自定义指令                 |
+| 后端       | NestJS、TypeORM、PostgreSQL、Passport JWT               |
+| 前端看板   | React 19、Vite、Ant Design 6、ECharts、TanStack Query   |
+| 工具链     | pnpm workspace、Turborepo、ESLint、Prettier、Changesets |
 
 ---
 
@@ -166,16 +166,16 @@ Dashboard 的 Vite 开发服务器已配置 API 代理，所有 `/api` 请求会
 
 ### 5. 访问服务
 
-| 服务 | 地址 |
-|------|------|
-| Dashboard 看板 | http://localhost:3000 |
-| Server API | http://localhost:3001 |
-| Swagger 文档 | http://localhost:3001/api/docs |
-| 健康检查 | http://localhost:3001/api/health |
+| 服务           | 地址                             |
+| -------------- | -------------------------------- |
+| Dashboard 看板 | http://localhost:3007            |
+| Server API     | http://localhost:3008            |
+| Swagger 文档   | http://localhost:3008/api/docs   |
+| 健康检查       | http://localhost:3008/api/health |
 
 ### 6. 首次使用
 
-1. 打开 http://localhost:3000，在登录页切换到「注册」标签
+1. 打开 http://localhost:3007，在登录页切换到「注册」标签
 2. 注册一个账号后自动登录
 3. 进入「项目管理」创建一个项目，获取 `appId`
 4. 在你的前端项目中接入 SDK（见下方 SDK 接入指南）
@@ -200,76 +200,74 @@ npm install @footprint/vue
 ### 基础用法
 
 ```typescript
-import { Footprint, autoTrack, webVitals, errorTrack } from '@footprint/core'
+import { Footprint, autoTrack, webVitals, errorTrack } from '@footprint/core';
 
 const fp = Footprint.init({
   appId: 'your-app-id',
   serverUrl: 'https://your-server.com/api/collect',
   debug: true,
   plugins: [autoTrack(), webVitals(), errorTrack()],
-})
+});
 
 // 手动埋点
-fp.track('button_click', { buttonId: 'submit', page: 'checkout' })
+fp.track('button_click', { buttonId: 'submit', page: 'checkout' });
 
 // 用户登录后关联身份
-fp.identify('user-123')
+fp.identify('user-123');
 
 // 设置全局属性
-fp.setGlobalProps({ appVersion: '2.0.0' })
+fp.setGlobalProps({ appVersion: '2.0.0' });
 ```
 
 ### React 接入
 
 ```tsx
-import { Footprint } from '@footprint/core'
-import { FootprintProvider, useTrack, TrackClick } from '@footprint/react'
+import { Footprint } from '@footprint/core';
+import { FootprintProvider, useTrack, TrackClick } from '@footprint/react';
 
-const fp = Footprint.init({ appId: 'my-app', serverUrl: '/api/collect' })
+const fp = Footprint.init({ appId: 'my-app', serverUrl: '/api/collect' });
 
 function App() {
   return (
     <FootprintProvider instance={fp}>
       <MyPage />
     </FootprintProvider>
-  )
+  );
 }
 
 function MyPage() {
-  const track = useTrack()
+  const track = useTrack();
 
   return (
     <>
-      <button onClick={() => track('manual_click', { from: 'page' })}>
-        手动埋点
-      </button>
+      <button onClick={() => track('manual_click', { from: 'page' })}>手动埋点</button>
 
       <TrackClick event="buy_click" props={{ sku: '123' }}>
         <button>自动埋点</button>
       </TrackClick>
     </>
-  )
+  );
 }
 ```
 
 ### Vue 3 接入
 
 ```typescript
-import { createApp } from 'vue'
-import { Footprint } from '@footprint/core'
-import { FootprintPlugin } from '@footprint/vue'
+import { createApp } from 'vue';
+import { Footprint } from '@footprint/core';
+import { FootprintPlugin } from '@footprint/vue';
 
-const fp = Footprint.init({ appId: 'my-app', serverUrl: '/api/collect' })
-const app = createApp(App)
+const fp = Footprint.init({ appId: 'my-app', serverUrl: '/api/collect' });
+const app = createApp(App);
 
-app.use(FootprintPlugin, { instance: fp })
-app.mount('#app')
+app.use(FootprintPlugin, { instance: fp });
+app.mount('#app');
 ```
 
 ```vue
 <script setup>
-import { useTrack } from '@footprint/vue'
-const track = useTrack()
+import { useTrack } from '@footprint/vue';
+const track = useTrack();
 </script>
 
 <template>
@@ -277,9 +275,7 @@ const track = useTrack()
   <button @click="track('buy_click', { sku: '123' })">购买</button>
 
   <!-- 指令方式 -->
-  <button v-track:click="{ event: 'buy_click', props: { sku: '456' } }">
-    购买
-  </button>
+  <button v-track:click="{ event: 'buy_click', props: { sku: '456' } }">购买</button>
 </template>
 ```
 
@@ -405,22 +401,22 @@ server {
 
 ## 环境变量说明
 
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `DB_HOST` | PostgreSQL 主机 | `localhost` |
-| `DB_PORT` | PostgreSQL 端口 | `5432` |
-| `DB_USERNAME` | 数据库用户名 | `footprint` |
-| `DB_PASSWORD` | 数据库密码 | `footprint_secret` |
-| `DB_DATABASE` | 数据库名 | `footprint` |
-| `JWT_SECRET` | JWT 签名密钥 | — |
-| `JWT_REFRESH_SECRET` | Refresh Token 签名密钥 | — |
-| `JWT_EXPIRES_IN_SECONDS` | Access Token 有效期（秒） | `86400` |
-| `JWT_REFRESH_EXPIRES_IN_SECONDS` | Refresh Token 有效期（秒） | `604800` |
-| `PORT` | Server 监听端口 | `3001` |
-| `NODE_ENV` | 运行环境 | `development` |
-| `CORS_ORIGIN` | 允许的跨域来源 | `*` |
-| `THROTTLE_TTL` | 限流窗口（秒） | `60` |
-| `THROTTLE_LIMIT` | 限流窗口内最大请求数 | `100` |
+| 变量                             | 说明                       | 默认值             |
+| -------------------------------- | -------------------------- | ------------------ |
+| `DB_HOST`                        | PostgreSQL 主机            | `localhost`        |
+| `DB_PORT`                        | PostgreSQL 端口            | `5432`             |
+| `DB_USERNAME`                    | 数据库用户名               | `footprint`        |
+| `DB_PASSWORD`                    | 数据库密码                 | `footprint_secret` |
+| `DB_DATABASE`                    | 数据库名                   | `footprint`        |
+| `JWT_SECRET`                     | JWT 签名密钥               | —                  |
+| `JWT_REFRESH_SECRET`             | Refresh Token 签名密钥     | —                  |
+| `JWT_EXPIRES_IN_SECONDS`         | Access Token 有效期（秒）  | `86400`            |
+| `JWT_REFRESH_EXPIRES_IN_SECONDS` | Refresh Token 有效期（秒） | `604800`           |
+| `PORT`                           | Server 监听端口            | `3001`             |
+| `NODE_ENV`                       | 运行环境                   | `development`      |
+| `CORS_ORIGIN`                    | 允许的跨域来源             | `*`                |
+| `THROTTLE_TTL`                   | 限流窗口（秒）             | `60`               |
+| `THROTTLE_LIMIT`                 | 限流窗口内最大请求数       | `100`              |
 
 ---
 
@@ -428,57 +424,57 @@ server {
 
 ### 认证
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/auth/register` | 用户注册 |
-| POST | `/api/auth/login` | 用户登录 |
-| POST | `/api/auth/refresh` | 刷新 Token |
+| 方法 | 路径                 | 说明       |
+| ---- | -------------------- | ---------- |
+| POST | `/api/auth/register` | 用户注册   |
+| POST | `/api/auth/login`    | 用户登录   |
+| POST | `/api/auth/refresh`  | 刷新 Token |
 
 ### 用户
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/user/profile` | 获取个人信息 |
-| PUT | `/api/user/profile` | 更新个人信息 |
-| PUT | `/api/user/password` | 修改密码 |
+| 方法 | 路径                 | 说明         |
+| ---- | -------------------- | ------------ |
+| GET  | `/api/user/profile`  | 获取个人信息 |
+| PUT  | `/api/user/profile`  | 更新个人信息 |
+| PUT  | `/api/user/password` | 修改密码     |
 
 ### 项目管理
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/projects` | 项目列表 |
-| POST | `/api/projects` | 创建项目 |
-| GET | `/api/projects/:id` | 项目详情 |
-| PUT | `/api/projects/:id` | 更新项目 |
+| 方法   | 路径                | 说明     |
+| ------ | ------------------- | -------- |
+| GET    | `/api/projects`     | 项目列表 |
+| POST   | `/api/projects`     | 创建项目 |
+| GET    | `/api/projects/:id` | 项目详情 |
+| PUT    | `/api/projects/:id` | 更新项目 |
 | DELETE | `/api/projects/:id` | 删除项目 |
 
 ### 数据采集
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
+| 方法 | 路径           | 说明         |
+| ---- | -------------- | ------------ |
 | POST | `/api/collect` | SDK 事件上报 |
 
 ### 事件查询
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/events` | 事件列表（分页、筛选） |
-| GET | `/api/events/names` | 事件名列表 |
-| GET | `/api/events/export` | 导出 CSV |
-| GET | `/api/events/:id` | 事件详情 |
+| 方法 | 路径                 | 说明                   |
+| ---- | -------------------- | ---------------------- |
+| GET  | `/api/events`        | 事件列表（分页、筛选） |
+| GET  | `/api/events/names`  | 事件名列表             |
+| GET  | `/api/events/export` | 导出 CSV               |
+| GET  | `/api/events/:id`    | 事件详情               |
 
 ### 数据分析
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/analytics/trend` | 事件趋势 |
-| GET | `/api/analytics/realtime` | 实时概览 |
-| GET | `/api/analytics/top-events` | 热门事件排行 |
-| POST | `/api/analytics/funnel` | 漏斗分析 |
-| GET | `/api/analytics/web-vitals` | Web Vitals 趋势 |
-| GET | `/api/analytics/page-performance` | 页面加载排行 |
-| GET | `/api/analytics/errors` | 错误聚合列表 |
-| GET | `/api/analytics/errors/:message` | 错误详情 |
+| 方法 | 路径                              | 说明            |
+| ---- | --------------------------------- | --------------- |
+| GET  | `/api/analytics/trend`            | 事件趋势        |
+| GET  | `/api/analytics/realtime`         | 实时概览        |
+| GET  | `/api/analytics/top-events`       | 热门事件排行    |
+| POST | `/api/analytics/funnel`           | 漏斗分析        |
+| GET  | `/api/analytics/web-vitals`       | Web Vitals 趋势 |
+| GET  | `/api/analytics/page-performance` | 页面加载排行    |
+| GET  | `/api/analytics/errors`           | 错误聚合列表    |
+| GET  | `/api/analytics/errors/:message`  | 错误详情        |
 
 完整的接口文档请访问 Swagger UI：`http://localhost:3001/api/docs`
 
@@ -486,15 +482,15 @@ server {
 
 ## 项目脚本
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm install` | 安装所有依赖 |
-| `pnpm dev` | 启动所有包的开发模式 |
-| `pnpm build` | 构建所有包 |
-| `pnpm lint` | 运行所有包的 lint 检查 |
-| `pnpm test` | 运行所有包的测试 |
-| `pnpm format` | 格式化代码 |
-| `pnpm clean` | 清理所有构建产物和 node_modules |
+| 命令           | 说明                            |
+| -------------- | ------------------------------- |
+| `pnpm install` | 安装所有依赖                    |
+| `pnpm dev`     | 启动所有包的开发模式            |
+| `pnpm build`   | 构建所有包                      |
+| `pnpm lint`    | 运行所有包的 lint 检查          |
+| `pnpm test`    | 运行所有包的测试                |
+| `pnpm format`  | 格式化代码                      |
+| `pnpm clean`   | 清理所有构建产物和 node_modules |
 
 ---
 
@@ -502,12 +498,12 @@ server {
 
 ### 表结构
 
-| 表名 | 说明 |
-|------|------|
-| `users` | 看板用户（email、密码哈希、昵称） |
-| `projects` | 项目（名称、appId、appSecret、域名白名单、数据保留天数） |
-| `project_members` | 项目成员关联（用户、项目、角色） |
-| `events` | 事件主表（事件名、属性 JSONB、时间戳、会话、用户、页面、设备等） |
+| 表名              | 说明                                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| `users`           | 看板用户（email、密码哈希、昵称）                                |
+| `projects`        | 项目（名称、appId、appSecret、域名白名单、数据保留天数）         |
+| `project_members` | 项目成员关联（用户、项目、角色）                                 |
+| `events`          | 事件主表（事件名、属性 JSONB、时间戳、会话、用户、页面、设备等） |
 
 ### 索引
 
