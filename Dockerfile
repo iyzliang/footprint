@@ -23,11 +23,14 @@ FROM base AS runner
 ENV NODE_ENV=production
 WORKDIR /app
 
-COPY --from=builder /app/packages/server/dist ./dist
-COPY --from=builder /app/packages/dashboard/dist ./public
+# Keep workspace-like runtime layout so Node resolves package deps correctly.
+COPY --from=builder /app/packages/server/dist ./packages/server/dist
+COPY --from=builder /app/packages/dashboard/dist ./packages/dashboard/dist
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/server/node_modules ./packages/server/node_modules
-COPY packages/server/package.json ./package.json
+COPY packages/server/package.json ./packages/server/package.json
+
+WORKDIR /app/packages/server
 
 EXPOSE 3008
 
