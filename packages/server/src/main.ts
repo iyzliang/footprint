@@ -16,7 +16,8 @@ async function bootstrap() {
   app.enableCors({
     origin: configService.get<string>('CORS_ORIGIN', '*'),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    // Collect API follows "no credentials" mode for broad cross-origin ingestion.
+    credentials: false,
   });
 
   // Global validation pipe

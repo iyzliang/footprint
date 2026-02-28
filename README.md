@@ -219,6 +219,8 @@ fp.identify('user-123');
 fp.setGlobalProps({ appVersion: '2.0.0' });
 ```
 
+> 注意：采集请求默认采用“无凭据”模式。请勿在前端将上报请求配置为 `credentials: 'include'` 或 `withCredentials: true`，否则会触发跨域预检失败。
+
 ### React 接入
 
 ```tsx
