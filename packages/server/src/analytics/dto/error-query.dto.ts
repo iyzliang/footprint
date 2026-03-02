@@ -1,7 +1,13 @@
-import { IsString, IsDateString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import { IsString, IsDateString, IsOptional, IsNumber, Min, Max, IsIn } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ErrorListQueryDto {
+  @ApiPropertyOptional({ enum: ['js_error', 'promise_error', 'resource_error'] })
+  @IsOptional()
+  @IsString()
+  @IsIn(['js_error', 'promise_error', 'resource_error'])
+  type?: string;
+
   @ApiProperty()
   @IsString()
   projectId: string;
@@ -20,6 +26,19 @@ export class ErrorListQueryDto {
   @Min(1)
   @Max(100)
   limit?: number = 20;
+
+  @ApiPropertyOptional({ default: 1 })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  page?: number = 1;
+
+  @ApiPropertyOptional({ default: 20 })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  pageSize?: number = 20;
 }
 
 export class ErrorDetailQueryDto {

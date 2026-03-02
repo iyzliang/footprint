@@ -13,12 +13,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // CORS
-  app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', '*'),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    // Collect API follows "no credentials" mode for broad cross-origin ingestion.
-    credentials: false,
-  });
+  app.enableCors();
 
   // Global validation pipe
   app.useGlobalPipes(

@@ -31,7 +31,7 @@ export default function ErrorDetailPage() {
       title: '时间',
       dataIndex: 'timestamp',
       key: 'timestamp',
-      render: (v: number) => dayjs(v).format('YYYY-MM-DD HH:mm:ss'),
+      render: (v: number) => dayjs(Number(v)).format('YYYY-MM-DD HH:mm:ss'),
     },
     { title: '用户', dataIndex: 'userId', key: 'userId', render: (v: string) => v || '-' },
     { title: '页面', dataIndex: 'pageUrl', key: 'pageUrl', ellipsis: true },
@@ -48,7 +48,14 @@ export default function ErrorDetailPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 16,
+        }}
+      >
         <Typography.Title level={3} style={{ margin: 0 }}>
           错误详情
         </Typography.Title>
@@ -72,10 +79,10 @@ export default function ErrorDetailPage() {
             <Descriptions.Item label="出现次数">{data.summary.count}</Descriptions.Item>
             <Descriptions.Item label="影响用户数">{data.summary.userCount}</Descriptions.Item>
             <Descriptions.Item label="首次出现">
-              {dayjs(data.summary.firstSeen).format('YYYY-MM-DD HH:mm:ss')}
+              {dayjs(Number(data.summary.firstSeen)).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
             <Descriptions.Item label="最近出现">
-              {dayjs(data.summary.lastSeen).format('YYYY-MM-DD HH:mm:ss')}
+              {dayjs(Number(data.summary.lastSeen)).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
           </Descriptions>
         </Card>

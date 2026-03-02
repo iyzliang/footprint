@@ -52,21 +52,27 @@ export default function ErrorListPage() {
         <a onClick={() => navigate(`/errors/detail?message=${encodeURIComponent(msg)}`)}>{msg}</a>
       ),
     },
-    { title: '出现次数', dataIndex: 'count', key: 'count', width: 100, sorter: (a: ErrorAggregate, b: ErrorAggregate) => a.count - b.count },
+    {
+      title: '出现次数',
+      dataIndex: 'count',
+      key: 'count',
+      width: 120,
+      sorter: (a: ErrorAggregate, b: ErrorAggregate) => a.count - b.count,
+    },
     { title: '影响用户', dataIndex: 'userCount', key: 'userCount', width: 100 },
     {
       title: '首次出现',
       dataIndex: 'firstSeen',
       key: 'firstSeen',
       width: 160,
-      render: (d: string) => dayjs(d).format('YYYY-MM-DD HH:mm'),
+      render: (d: string) => dayjs(Number(d)).format('YYYY-MM-DD HH:mm'),
     },
     {
       title: '最近出现',
       dataIndex: 'lastSeen',
       key: 'lastSeen',
       width: 160,
-      render: (d: string) => dayjs(d).format('YYYY-MM-DD HH:mm'),
+      render: (d: string) => dayjs(Number(d)).format('YYYY-MM-DD HH:mm'),
     },
   ];
 

@@ -241,37 +241,56 @@ export class AnalyticsService {
   }
 
   async getErrorList(query: ErrorListQueryDto) {
-    const { projectId, startDate, endDate } = query;
-    const limit = query.limit ?? 20;
+    const { projectId, startDate, endDate, type } = query;
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? query.limit ?? 20;
     const startTs = new Date(startDate).getTime();
     const endTs = new Date(endDate).getTime() + 86400000 - 1;
 
-    const results = await this.eventRepository
+    const qb = this.eventRepository
       .createQueryBuilder('event')
       .select("event.properties->>'message'", 'message')
-      .addSelect('event.eventName', 'errorType')
+      .addSelect('event.eventName', 'type')
       .addSelect('COUNT(*)', 'count')
-      .addSelect('COUNT(DISTINCT event.anonymousId)', 'affectedUsers')
+      .addSelect('COUNT(DISTINCT event.anonymousId)', 'userCount')
       .addSelect('MIN(event.timestamp)', 'firstSeen')
       .addSelect('MAX(event.timestamp)', 'lastSeen')
+      .addSelect('COUNT(*) OVER()', 'total')
       .where('event.projectId = :projectId', { projectId })
       .andWhere("event.eventName IN ('js_error', 'promise_error', 'resource_error')")
       .andWhere('event.timestamp >= :startTs', { startTs })
       .andWhere('event.timestamp <= :endTs', { endTs })
       .groupBy("event.properties->>'message'")
       .addGroupBy('event.eventName')
-      .orderBy('count', 'DESC')
-      .limit(limit)
+      .orderBy('count', 'DESC');
+
+    if (type) {
+      qb.andWhere('event.eventName = :type', { type });
+    }
+
+    const results = await qb
+      .offset((page - 1) * pageSize)
+      .limit(pageSize)
       .getRawMany();
 
-    return results.map((r) => ({
+    const items = results.map((r) => ({
       message: r.message,
-      errorType: r.errorType,
+      type: r.type,
       count: parseInt(r.count, 10),
-      affectedUsers: parseInt(r.affectedUsers, 10),
+      userCount: parseInt(r.userCount, 10),
       firstSeen: parseInt(r.firstSeen, 10),
       lastSeen: parseInt(r.lastSeen, 10),
     }));
+
+    const total = results.length > 0 ? parseInt(results[0].total, 10) : 0;
+
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
   }
 
   async getErrorDetail(query: ErrorDetailQueryDto) {

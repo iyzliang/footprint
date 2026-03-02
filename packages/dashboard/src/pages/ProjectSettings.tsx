@@ -1,4 +1,17 @@
-import { Card, Tabs, Form, Input, Button, Typography, Space, Tag, InputNumber, Switch, message, Popconfirm } from 'antd';
+import {
+  Card,
+  Tabs,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Space,
+  Tag,
+  InputNumber,
+  Switch,
+  message,
+  Popconfirm,
+} from 'antd';
 import { CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -82,7 +95,10 @@ export default function ProjectSettingsPage() {
                         style={{ cursor: 'pointer', color: '#1677ff' }}
                         onClick={() => copyToClipboard(project.appSecret)}
                       />
-                      <Popconfirm title="确认重新生成 App Secret？" onConfirm={() => regenerateMutation.mutate()}>
+                      <Popconfirm
+                        title="确认重新生成 App Secret？"
+                        onConfirm={() => regenerateMutation.mutate()}
+                      >
                         <Button size="small" icon={<ReloadOutlined />}>
                           重新生成
                         </Button>

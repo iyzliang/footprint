@@ -24,7 +24,15 @@ export default function EventListPage() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['events', projectId, eventName, userId, timeRange.startTime, timeRange.endTime, page],
+    queryKey: [
+      'events',
+      projectId,
+      eventName,
+      userId,
+      timeRange.startTime,
+      timeRange.endTime,
+      page,
+    ],
     queryFn: () =>
       getEvents({
         projectId: projectId!,
@@ -53,12 +61,17 @@ export default function EventListPage() {
   };
 
   const columns = [
-    { title: '事件名', dataIndex: 'eventName', key: 'eventName', render: (v: string) => <Tag>{v}</Tag> },
+    {
+      title: '事件名',
+      dataIndex: 'eventName',
+      key: 'eventName',
+      render: (v: string) => <Tag>{v}</Tag>,
+    },
     {
       title: '时间',
       dataIndex: 'timestamp',
       key: 'timestamp',
-      render: (v: number) => dayjs(v).format('YYYY-MM-DD HH:mm:ss'),
+      render: (v: number) => dayjs(Number(v)).format('YYYY-MM-DD HH:mm:ss'),
     },
     { title: '用户', dataIndex: 'userId', key: 'userId', render: (v: string) => v || '-' },
     { title: '页面', dataIndex: 'pageUrl', key: 'pageUrl', ellipsis: true },
@@ -128,7 +141,15 @@ export default function EventListPage() {
         width={640}
       >
         {detailEvent && (
-          <pre style={{ maxHeight: 500, overflow: 'auto', background: '#f5f5f5', padding: 16, borderRadius: 8 }}>
+          <pre
+            style={{
+              maxHeight: 500,
+              overflow: 'auto',
+              background: '#f5f5f5',
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
             {JSON.stringify(detailEvent, null, 2)}
           </pre>
         )}
