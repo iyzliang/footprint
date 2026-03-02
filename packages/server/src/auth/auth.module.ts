@@ -18,7 +18,7 @@ import { User } from '../entities';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET', 'footprint_jwt_secret'),
         signOptions: {
-          expiresIn: configService.get<number>('JWT_EXPIRES_IN_SECONDS', 86400),
+          expiresIn: Number(configService.get('JWT_EXPIRES_IN_SECONDS', '3600')),
         },
       }),
     }),

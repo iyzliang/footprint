@@ -106,12 +106,12 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(accessPayload, {
       secret: this.configService.get<string>('JWT_SECRET', 'footprint_jwt_secret'),
-      expiresIn: this.configService.get<number>('JWT_EXPIRES_IN_SECONDS', 86400),
+      expiresIn: Number(this.configService.get('JWT_EXPIRES_IN_SECONDS', '3600')),
     });
 
     const refreshToken = this.jwtService.sign(refreshPayload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET', 'footprint_jwt_refresh'),
-      expiresIn: this.configService.get<number>('JWT_REFRESH_EXPIRES_IN_SECONDS', 604800),
+      expiresIn: Number(this.configService.get('JWT_REFRESH_EXPIRES_IN_SECONDS', '604800')),
     });
 
     return { accessToken, refreshToken };
